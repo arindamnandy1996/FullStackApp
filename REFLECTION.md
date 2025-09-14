@@ -2,7 +2,7 @@
 
 ## 🤝 Copilot’s Role in Development
 
-Throughout the development of this full-stack EventEase prototype, Copilot played a pivotal role in accelerating implementation, improving code quality, and guiding architectural decisions. Key contributions included:
+Throughout the development of this full-stack FullStackApp prototype, Copilot played a pivotal role in accelerating implementation, improving code quality, and guiding architectural decisions. Key contributions included:
 
 - **Integration Code Generation**  
   Copilot scaffolded the initial `FetchProducts.razor` component with clean async logic, cancellation support, and graceful fallback handling. It also suggested the correct use of `HttpClient` injection and helped align the front-end route with the back-end endpoint.
