@@ -1,0 +1,88 @@
+@page "/fetchproducts"
+@inject HttpClient Http
+@using System.Text.Json
+
+<h3>Product List</h3>
+
+<ul>
+    @if (products == null)
+    {
+        <li>Loading...</li>
+    }
+    else if (products.Length == 0)
+    {
+        <li>No products available.</li>
+    }
+    else
+    {
+        foreach (var product in products)
+        {
+            <li>
+                <strong>@product.Name</strong> - ₹@product.Price  
+                <br />
+                <em>Category:</em> @product.Category.Name
+            </li>
+        }
+    }
+</ul>
+
+@code {
+    private Product[]? products;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+            var response = await Http.GetAsync("/api/productlist", cts.Token);
+            response.EnsureSuccessStatusCode();
+
+            var json = await response.Content.ReadAsStringAsync(cts.Token);
+            Console.WriteLine($"Raw response: {json}");
+
+            try
+            {
+                // Copilot suggested nested try-catch for JSON parsing to isolate deserialization errors
+                products = System.Text.Json.JsonSerializer.Deserialize<Product[]>(json, new System.Text.Json.JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                }) ?? Array.Empty<Product>();
+            }
+            catch (JsonException jsonEx)
+            {
+                Console.Error.WriteLine($"JSON deserialization error: {jsonEx.Message}");
+                products = Array.Empty<Product>();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            Console.Error.WriteLine("Request timed out.");
+            products = Array.Empty<Product>();
+        }
+        catch (HttpRequestException httpEx)
+        {
+            Console.Error.WriteLine($"HTTP error: {httpEx.Message}");
+            products = Array.Empty<Product>();
+        }
+        catch (Exception ex)
+        {
+            Console.Error.WriteLine($"Unexpected error: {ex.Message}");
+            products = Array.Empty<Product>();
+        }
+    }
+
+    public class Product
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public double Price { get; set; }
+        public int Stock { get; set; }
+        public Category Category { get; set; } = new Category();
+    }
+
+    public class Category
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = string.Empty;
+    }
+}
