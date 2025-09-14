@@ -1,7 +1,3 @@
-Here’s a reflective summary you can include in your `REFLECTION.md` or append to your project’s `README.md`. It captures your experience integrating the Blazor front-end with the Minimal API back-end, and how Copilot supported you throughout:
-
----
-
 # 🧠 REFLECTION.md
 
 ## 🤝 Copilot’s Role in Development
